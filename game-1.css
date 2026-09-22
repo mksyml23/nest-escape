@@ -1,0 +1,39 @@
+:root { --ink:#10122d; --cream:#fff7dc; --pink:#ff619f; --aqua:#5cf1df; --gold:#ffd452; --violet:#8064ff; --danger:#ff6170; --safe:#aaffd8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; overflow:hidden; background:radial-gradient(circle at 50% 0%,#44428b,#10112a 66%); color:var(--cream); font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif; }
+    button { font:inherit; } button:focus-visible { outline:4px solid #fff; outline-offset:3px; }
+    #game { position:relative; width:min(100vw,1000px); height:min(100vh,650px); min-height:460px; overflow:hidden; isolation:isolate; border:5px solid #ffffff2f; border-radius:26px; background:linear-gradient(#332e70 0 60%,#22204d 60%); box-shadow:0 25px 85px #000a; touch-action:none; }
+    .stars,.scanlines,.vignette { position:absolute; inset:0; pointer-events:none; }
+    .stars { opacity:.48; background-image:radial-gradient(#fff 1px,transparent 1.5px),radial-gradient(#a4f8ff 1px,transparent 1.5px); background-position:0 0,22px 17px; background-size:46px 46px,68px 68px; }
+    .vignette { z-index:18; box-shadow:inset 0 0 90px #07071780; }
+    .scanlines { z-index:17; opacity:.09; background:repeating-linear-gradient(0deg,transparent 0 3px,#fff 4px); mix-blend-mode:overlay; }
+    .wall-panel { position:absolute; top:120px; bottom:39%; width:130px; border:4px solid #6b66bd; border-bottom:0; border-radius:16px 16px 0 0; background:linear-gradient(90deg,#28245a,#3e397d); opacity:.9; }
+    .wall-panel::after { content:""; position:absolute; inset:13px; border:2px solid #8e85eb; border-radius:8px; opacity:.5; }
+    .p1 { left:5%; } .p2 { left:40%; } .p3 { right:6%; }
+    header { position:absolute; z-index:12; inset:20px 24px auto; display:flex; justify-content:space-between; gap:18px; align-items:flex-start; }
+    h1 { margin:0; font-size:clamp(25px,4vw,43px); line-height:.86; letter-spacing:1px; text-shadow:3px 3px 0 var(--pink); }
+    .subtitle { margin:7px 0 0; font-size:13px; color:#e0dcff; font-weight:800; letter-spacing:.4px; }
+    .objective { max-width:230px; padding:10px 14px; border:2px solid #ffffff40; border-radius:18px; background:#10122dd9; color:#eae8ff; text-align:right; font-size:13px; line-height:1.25; }
+    .objective b { color:var(--gold); }
+    .run-stats { position:absolute; z-index:12; top:94px; right:24px; display:flex; gap:8px; color:#ebe9ff; font-size:12px; font-weight:900; }
+    .run-stat { min-width:73px; padding:7px 9px; border:2px solid #ffffff30; border-radius:999px; background:#10122db8; text-align:center; }
+    .run-stat b { color:var(--gold); }
+    .floor { position:absolute; z-index:1; inset:auto 0 0; height:40%; overflow:hidden; border-top:5px solid #716bd2; background:repeating-linear-gradient(90deg,#292760 0 58px,#232154 58px 116px); }
+    .floor::after { content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg,transparent 0 45px,#17163d 45px 49px); opacity:.8; }
+    .floor-glow { position:absolute; z-index:2; left:50%; bottom:20%; width:80%; height:80px; transform:translateX(-50%); background:radial-gradient(ellipse,#715dff85,transparent 65%); filter:blur(16px); }
+    .hazard-lane { position:absolute; z-index:2; left:40%; bottom:21%; width:23%; height:8%; border:2px dashed #ffdb5a77; border-radius:50%; background:#ffca3020; transform:skewX(-12deg); }
+    .hazard-lane::after { content:"WATCH THE SWING"; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) skewX(12deg); color:#ffe788bb; white-space:nowrap; font-size:10px; font-weight:1000; letter-spacing:1px; }
+    .route { position:absolute; z-index:2; left:23%; right:20%; bottom:26%; height:4px; border-radius:99px; background:linear-gradient(90deg,#aafff544,#ffdd5888,#ff81ba66); }
+    .route::after { content:""; position:absolute; right:-2px; top:50%; width:10px; height:10px; transform:translateY(-50%) rotate(45deg); border-top:3px solid var(--gold); border-right:3px solid var(--gold); }
+    .machine { position:absolute; z-index:4; left:13%; bottom:18%; width:190px; height:270px; border:8px solid #ff8cbe; border-radius:24px 24px 12px 12px; background:linear-gradient(135deg,#6ef1ea,#4b5fd7 55%,#5b2c93); box-shadow:inset 0 0 0 6px #172052,0 14px 0 #111131,0 17px 22px #0006; }
+    .machine-header { position:absolute; inset:16px 13px auto; padding:6px 0; border:3px solid #c4fff9; border-radius:9px; background:#1d2867; color:#fff; text-align:center; font-size:21px; font-weight:1000; line-height:.8; text-shadow:2px 2px 0 #e24f9b; }
+    .machine-glass { position:absolute; inset:75px 15px 22px; overflow:hidden; border:4px solid #c4fff9; border-radius:10px; background:linear-gradient(135deg,#14235fb8,#477de955); }
+    .machine-glass::before { content:""; position:absolute; width:150%; height:13px; left:-30%; top:23px; transform:rotate(-35deg); background:#fff5; }
+    .prize { position:absolute; bottom:11px; width:27px; height:25px; border:3px solid #192052; border-radius:50% 50% 38% 38%; }
+    .prize:nth-child(1) { left:13px; background:var(--gold); } .prize:nth-child(2) { left:54px; background:var(--pink); } .prize:nth-child(3) { left:93px; background:var(--aqua); }
+    .rail { position:absolute; top:13px; left:10px; right:10px; height:5px; border-radius:9px; background:#c4fff9; }
+    #claw { position:absolute; z-index:7; left:calc(50% - 20px); bottom:25%; width:40px; height:135px; transform-origin:50% 0; animation:swing 2.8s ease-in-out infinite; filter:drop-shadow(0 9px 3px #0006); }
+    .cable { width:6px; height:89px; margin:auto; background:repeating-linear-gradient(0deg,#ffe968 0 7px,#c7a532 7px 10px); }
+    .claw-warning { position:absolute; left:50%; bottom:-30px; width:98px; height:31px; transform:translateX(-50%); border-radius:50%; background:radial-gradient(ellipse,#ffda4daa,transparent 67%); filter:blur(5px); animation:warning 1.4s ease-in-out infinite; }
+    @keyframes warning { 50% { opacity:.2; transform:translateX(-50%) scale(.67); } }
+    .claw-head { position:absolute; top:84px; left:5px; width:30px; height:24px; border:4px solid #ffe968; border-radius:8px 8px 50% 50%; background:#e8b63a; }
