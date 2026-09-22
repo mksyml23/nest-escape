@@ -1,1 +1,2 @@
-TEMP
+ .restart { top:19px; bottom:auto; right:16px; } .controls { display:flex; } header { inset:18px 17px auto; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; } }
