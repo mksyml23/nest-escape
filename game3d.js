@@ -49,6 +49,20 @@ for(const x of [-10.7,10.7]){const bin=box(.65,.85,.65,standard(0x384467),x,.43,
 for(const x of [-3.2,1.8]){box(2.1,.17,.55,standard(0x8a5a4b),x,1.05,2.7);for(const dx of [-.75,.75])box(.14,.85,.14,standard(0x34354b),x+dx,.48,2.7)}
 for(let x=-10.7;x<-5.2;x+=.7){box(.36,.035,.8,standard(0xffd452),x,.045,3.18)}
 
+// Batch small architectural details into instanced meshes: more building character, almost no draw-call cost.
+function instances(geometry,material,transforms){const mesh=new THREE.InstancedMesh(geometry,material,transforms.length);const dummy=new THREE.Object3D();transforms.forEach((item,i)=>{dummy.position.set(item[0],item[1],item[2]);dummy.rotation.set(item[3]||0,item[4]||0,item[5]||0);dummy.scale.set(item[6]||1,item[7]||1,item[8]||1);dummy.updateMatrix();mesh.setMatrixAt(i,dummy.matrix)});mesh.castShadow=mesh.receiveShadow=true;scene.add(mesh);return mesh}
+// Bolts on pillars and wall seams.
+const bolts=[];for(const x of [-11.25,-5.9,0,5.9,11.25])for(const y of [1.1,3.2,6.9,8.8]){bolts.push([x-.27,y,.42,0,0,0,.8,.8,.8]);bolts.push([x+.27,y,.42,0,0,0,.8,.8,.8])}instances(new THREE.CylinderGeometry(.075,.075,.06,6),standard(0xb4b9c8,.45),bolts);
+// Low-poly floor scuffs and colourful worn tile inlays, one instanced plane batch.
+const scuffs=[];for(let i=0;i<45;i++){const x=-11+((i*37)%220)/10,z=-3.2+((i*61)%62)/10;scuffs.push([x,.015,z,-Math.PI/2,0,(i%5)*.6,.16+(i%3)*.12,1,.55])}const scuffMat=new THREE.MeshBasicMaterial({color:0x8d91bd,transparent:true,opacity:.16,side:THREE.DoubleSide});instances(new THREE.PlaneGeometry(1,.08),scuffMat,scuffs);
+// Ceiling acoustic baffles: small repeated geometry reads as a finished commercial arcade ceiling.
+const baffles=[];for(let x=-10;x<=10;x+=2)for(const z of [-2.1,.2,2.5])baffles.push([x,9.72,z,0,0,0,1,.12,.55]);instances(new THREE.BoxGeometry(.7,.12,.7),standard(0x252942),baffles);
+// Background cabinet silhouettes with glowing screens; they add depth but keep the route clear.
+function cabinet(x,z,color,title){const g=new THREE.Group();scene.add(g);g.position.set(x,0,z);box(1.45,2.7,.85,standard(0x293052),0,1.35,0,g);box(1.58,.22,.96,standard(color),0,2.72,0,g);const screen=box(1.03,.88,.025,standard(0x10234d),0,1.85,.45,g);screen.material.emissive=new THREE.Color(color);screen.material.emissiveIntensity=.8;const sign=label(title,color,1.05);sign.position.set(0,2.3,.49);g.add(sign);box(.72,.11,.3,standard(0x1a2037),0,.78,.47,g);return g}
+cabinet(-3.9,-2.7,0x5cf1df,'PIXEL');cabinet(-2.15,-2.85,0xff619f,'BEAT');cabinet(2.15,-2.85,0xffd452,'RACE');
+// Vent grilles and cable trays make the window wall feel constructed rather than painted.
+for(const x of [-9,-6.2,-1.2,1.2,6.2,9]){box(1.35,.42,.09,standard(0x20243d),x,.85,-3.61);for(let line=-.48;line<=.48;line+=.24)box(.045,.28,.025,standard(0x7a809b),x+line,.85,-3.54)}
+
 // Detailed low-poly claw machine.
 const machine=new THREE.Group();scene.add(machine);machine.position.set(-7.9,0,-.25);
 box(3.35,5.2,2.15,standard(0x5a55ba),0,2.6,0,machine);box(3.68,.32,2.35,standard(0xff8cbe),0,5.34,0,machine);box(3.68,.32,2.35,standard(0xff8cbe),0,.22,0,machine);box(.3,5.25,2.35,standard(0xff8cbe),-1.8,2.7,0,machine);box(.3,5.25,2.35,standard(0xff8cbe),1.8,2.7,0,machine);
