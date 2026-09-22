@@ -1,1 +1,31 @@
-PLACEHOLDER
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121431">
+  <meta name="description" content="NEST ESCAPE: After Hours — Claw Chaos">
+  <title>NEST ESCAPE — Claw Chaos</title>
+  <link rel="stylesheet" href="game-1.css">
+  <link rel="stylesheet" href="game-2.css">
+  <link rel="stylesheet" href="game-3.css">
+</head>
+<body>
+  <main id="game" aria-label="NEST ESCAPE, Claw Chaos game" aria-describedby="message">
+    <div class="stars"></div><div class="wall-panel p1"></div><div class="wall-panel p2"></div><div class="wall-panel p3"></div>
+    <header><div><h1>NEST ESCAPE</h1><p class="subtitle">AFTER HOURS · ROOM 01: CLAW CHAOS</p></div><div class="objective">Watch the claw. Dash through the <b>EXIT</b><br>Jump is optional, timing is not.</div></header>
+    <div class="run-stats" aria-label="Run statistics"><span class="run-stat">TIME <b id="timer">0.0</b>s</span><span class="run-stat">BEST <b id="best">--</b></span><span class="run-stat">ESCAPES <b id="escapes">0</b></span><span class="run-stat">CLAWED <b id="deaths">0</b></span></div>
+    <div class="floor"></div><div class="floor-glow"></div><div class="route" aria-hidden="true"></div><div class="hazard-lane" aria-hidden="true"></div>
+    <div class="machine" aria-label="Claw Chaos arcade machine"><div class="machine-header">CLAW<br>CHAOS</div><div class="machine-glass"><div class="rail"></div><i class="prize"></i><i class="prize"></i><i class="prize"></i></div></div>
+    <div id="claw" aria-label="Moving claw hazard"><div class="cable"></div><div class="claw-head"></div><div class="claw-warning" aria-hidden="true"></div></div>
+    <div class="exit" aria-label="Exit door"></div>
+    <div id="player" aria-label="Player character"><div class="player-inner"><div class="shadow"></div><div class="head"></div><div class="body"></div></div></div>
+    <p id="message" class="message" aria-live="polite">Watch the claw swing, then dash right for the exit.</p>
+    <button class="restart" id="restart" aria-label="Restart room">Restart</button><p class="legend" aria-hidden="true">← → / A D move · W / ↑ / Space jump · R restart</p>
+    <div class="controls" aria-label="Touch controls"><div class="control-group"><button class="control" data-move="-1" aria-label="Move left">←</button><button class="control" data-move="1" aria-label="Move right">→</button></div><button class="control jump" id="jump" aria-label="Jump">JUMP</button></div>
+    <div class="overlay" id="won" role="dialog" aria-modal="true" aria-label="You escaped"><div class="card"><h2>YOU ESCAPED!</h2><div class="badge" id="resultBadge">CLEAN DASH</div><p>The claw machine has filed a strongly worded complaint.</p><div class="result-stats" id="resultStats">Time: 0.0s · Clawed: 0</div><button id="again">Play again</button><p class="playtest-copy">Playtest note: tell Maksym one thing that was fun and one thing that confused you.</p></div></div>
+    <div class="vignette"></div><div class="scanlines"></div>
+  </main>
+<script src="game.js"></script>
+</body>
+</html>
