@@ -1,0 +1,36 @@
+
+    .claw-head::before,.claw-head::after { content:""; position:absolute; top:17px; width:14px; height:30px; border:5px solid #ffe968; border-top:0; }
+    .claw-head::before { left:-11px; border-right:0; border-radius:0 0 0 12px; transform:rotate(25deg); } .claw-head::after { right:-11px; border-left:0; border-radius:0 0 12px 0; transform:rotate(-25deg); }
+    @keyframes swing { 0%,100% { transform:rotate(-17deg); } 50% { transform:rotate(17deg); } }
+    .exit { position:absolute; z-index:4; right:11%; bottom:18%; width:158px; height:267px; border:8px solid var(--gold); border-radius:17px 17px 4px 4px; background:linear-gradient(90deg,#ff6a9e,#b841ac); box-shadow:inset 0 0 0 6px #782e99,0 14px 0 #111131,0 17px 22px #0006; animation:exitGlow 1.6s ease-in-out infinite; }
+    @keyframes exitGlow { 50% { filter:brightness(1.18); box-shadow:inset 0 0 0 6px #782e99,0 14px 0 #111131,0 17px 31px #ff76bd88; } }
+    .exit::before { content:"EXIT"; position:absolute; top:16px; left:50%; transform:translateX(-50%); color:var(--cream); font-size:26px; font-weight:1000; letter-spacing:2px; text-shadow:2px 2px #8b2d82; }
+    .exit::after { content:"↗"; position:absolute; left:50%; bottom:43px; transform:translateX(-50%); color:var(--gold); font-size:75px; font-weight:1000; text-shadow:3px 3px #8b2d82; animation:arrow 1s ease-in-out infinite; }
+    @keyframes arrow { 50% { transform:translate(5px,-5px); } }
+    #player { position:absolute; z-index:9; left:7%; bottom:21%; width:50px; height:68px; transform-origin:50% 100%; }
+    #player.facing-left { transform:scaleX(-1); }
+    #player.airborne .player-inner { animation:airSpin .32s ease-in-out infinite alternate; }
+    #player.landing .player-inner { animation:land .2s ease-out; }
+    @keyframes airSpin { to { transform:rotate(7deg); } } @keyframes land { 50% { transform:scale(1.14,.8); } }
+    .shadow { position:absolute; bottom:0; left:4px; width:42px; height:10px; border-radius:50%; background:#10102d99; filter:blur(2px); transition:transform .12s,opacity .12s; }
+    .head { position:absolute; left:7px; top:0; width:37px; height:34px; border:4px solid var(--ink); border-radius:50% 50% 43% 43%; background:#ffc89f; }
+    .head::after { content:"•  •"; position:absolute; top:6px; left:7px; color:var(--ink); font-weight:1000; letter-spacing:2px; font-size:11px; white-space:pre; }
+    .body { position:absolute; left:2px; top:29px; width:47px; height:34px; border:4px solid var(--ink); border-radius:17px 17px 9px 9px; background:var(--aqua); box-shadow:inset 0 7px #aafff5; }
+    .body::after { content:"N"; position:absolute; left:50%; top:5px; transform:translateX(-50%); color:#176f76; font-size:15px; font-weight:1000; }
+    .message { position:absolute; z-index:15; left:50%; bottom:20px; width:min(570px,88%); transform:translateX(-50%); padding:12px 19px; border:2px solid #ffffff40; border-radius:17px; background:#11122ee8; color:#fff9df; text-align:center; font-size:14px; font-weight:800; line-height:1.25; }
+    .message.danger { border-color:var(--danger); color:#ffe8e8; } .message.success { border-color:var(--safe); color:#ddfffa; } .message.tip { border-color:var(--gold); }
+    .restart { position:absolute; z-index:16; right:23px; bottom:20px; border:0; border-radius:12px; padding:10px 14px; cursor:pointer; background:var(--gold); color:var(--ink); font-size:13px; font-weight:1000; box-shadow:0 4px 0 #b88d24; }
+    .restart:active,.control:active,.card button:active { transform:translateY(3px); box-shadow:none; }
+    .controls { display:none; position:absolute; z-index:16; inset:auto 15px 17px; justify-content:space-between; pointer-events:none; }
+    .control-group { display:flex; gap:8px; pointer-events:auto; }
+    .control { width:56px; height:56px; border:2px solid #ffffff70; border-radius:16px; background:#151733e8; color:#fff; font-size:25px; font-weight:1000; box-shadow:0 5px 0 #080918; touch-action:none; }
+    .jump { width:75px; font-size:13px; background:#614be2ed; }
+    .legend { position:absolute; z-index:11; left:24px; bottom:22px; color:#d8d5ff; font-size:11px; font-weight:800; opacity:.85; }
+    .overlay { position:absolute; z-index:30; inset:0; display:none; place-items:center; padding:25px; background:#11122edb; text-align:center; }
+    .overlay.show { display:grid; } .card { max-width:530px; padding:34px; border:5px solid var(--gold); border-radius:27px; background:linear-gradient(135deg,#6949ce,#ed5794); box-shadow:0 18px 0 #17142f; }
+    .card h2 { margin:0 0 10px; font-size:clamp(34px,7vw,51px); line-height:.9; text-shadow:3px 3px #9c347f; } .card p { margin:0 0 12px; font-size:17px; font-weight:700; }
+    .badge { display:inline-block; margin:2px 0 12px; padding:6px 10px; border-radius:999px; background:#10122d88; color:var(--gold); font-size:12px; font-weight:1000; letter-spacing:.5px; }
+    .result-stats { margin:0 0 18px; color:#fff9d8; font-size:14px; font-weight:900; }.card button { border:0; border-radius:12px; padding:13px 19px; cursor:pointer; background:var(--cream); color:var(--ink); font-weight:1000; box-shadow:0 4px 0 #b8a87e; }.playtest-copy { margin-top:17px!important; color:#f0eefe; font-size:12px!important; line-height:1.35; }
+    .confetti { position:absolute; z-index:31; width:10px; height:16px; border-radius:2px; pointer-events:none; animation:confetti 1.1s ease-out forwards; } @keyframes confetti { to { transform:translate(var(--x),420px) rotate(720deg); opacity:0; } }
+    #game.shake { animation:shake .32s linear; } @keyframes shake { 20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}100%{transform:none} }
+    @media (max-width:650px),(hover:none) { #game { min-height:100svh; border:0; border-radius:0; } .objective,.legend { display:none; } .run-stats { top:92px; right:12px; gap:4px; font-size:10px; } .run-stat { min-width:61px; padding:6px 7px; } .machine { left:4%; transform:scale(.78); transform-origin:bottom left; } .exit { right:3%; transform:scale(.78); transform-origin:bottom right; } .wall-panel { opacity:.45; } .p2 { display:none; } .hazard-lane { left:39%; width:27%; } .hazard-lane::after { display:none; } .message { bottom:88px; font-size:13px; }
