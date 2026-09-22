@@ -36,6 +36,8 @@
     .rail { position:absolute; top:13px; left:10px; right:10px; height:5px; border-radius:9px; background:#c4fff9; }
     #claw { position:absolute; z-index:4; left:calc(50% - 20px); bottom:34%; width:40px; height:135px; transform-origin:50% 0; animation:swing 2.8s ease-in-out infinite; filter:drop-shadow(0 9px 3px #0006); }
     .cable { width:6px; height:89px; margin:auto; background:repeating-linear-gradient(0deg,#ffe968 0 7px,#c7a532 7px 10px); }
+    .claw-warning { position:absolute; left:50%; bottom:-30px; width:84px; height:28px; transform:translateX(-50%); border-radius:50%; background:radial-gradient(ellipse,#ffda4d88,transparent 67%); filter:blur(5px); animation:warning 1.4s ease-in-out infinite; }
+    @keyframes warning { 50% { opacity:.25; transform:translateX(-50%) scale(.72); } }
     .claw-head { position:absolute; top:84px; left:5px; width:30px; height:24px; border:4px solid #ffe968; border-radius:8px 8px 50% 50%; background:#e8b63a; }
     .claw-head::before,.claw-head::after { content:""; position:absolute; top:17px; width:14px; height:30px; border:5px solid #ffe968; border-top:0; }
     .claw-head::before { left:-11px; border-right:0; border-radius:0 0 0 12px; transform:rotate(25deg); } .claw-head::after { right:-11px; border-left:0; border-radius:0 0 12px 0; transform:rotate(-25deg); }
@@ -72,10 +74,10 @@
   <main id="game" aria-label="NEST ESCAPE, Claw Chaos game">
     <div class="stars"></div><div class="wall-panel p1"></div><div class="wall-panel p2"></div><div class="wall-panel p3"></div>
     <header><div><h1>NEST ESCAPE</h1><p class="subtitle">AFTER HOURS · ROOM 01: CLAW CHAOS</p></div><div class="objective">Reach the neon <b>EXIT</b><br>Do not touch the claw</div></header>
-    <div class="run-stats" aria-label="Run statistics"><span class="run-stat">TIME <b id="timer">0.0</b>s</span><span class="run-stat">CLAWED <b id="deaths">0</b></span></div>
+    <div class="run-stats" aria-label="Run statistics"><span class="run-stat">TIME <b id="timer">0.0</b>s</span><span class="run-stat">BEST <b id="best">--</b></span><span class="run-stat">CLAWED <b id="deaths">0</b></span></div>
     <div class="floor"></div><div class="floor-glow"></div>
     <div class="machine" aria-label="Claw Chaos arcade machine"><div class="machine-header">CLAW<br>CHAOS</div><div class="machine-glass"><div class="rail"></div><i class="prize"></i><i class="prize"></i><i class="prize"></i></div></div>
-    <div id="claw" aria-label="Moving claw hazard"><div class="cable"></div><div class="claw-head"></div></div>
+    <div id="claw" aria-label="Moving claw hazard"><div class="cable"></div><div class="claw-head"></div><div class="claw-warning" aria-hidden="true"></div></div>
     <div class="exit" aria-label="Exit door"></div>
     <div id="player" aria-label="Player character"><div class="shadow"></div><div class="head"></div><div class="body"></div></div>
     <p id="message" class="message" aria-live="polite">Move right. Jump with W, ↑, or the purple button. Reach the exit.</p>
@@ -85,24 +87,29 @@
     <div class="scanlines"></div>
   </main>
 <script>
-  const game=document.querySelector("#game"),player=document.querySelector("#player"),claw=document.querySelector("#claw"),exitDoor=document.querySelector(".exit"),message=document.querySelector("#message"),won=document.querySelector("#won"),timer=document.querySelector("#timer"),deaths=document.querySelector("#deaths"),resultStats=document.querySelector("#resultStats");
-  const state={x:7,y:0,vx:0,vy:0,grounded:true,active:true,keys:new Set(),last:0,runStart:0,elapsed:0,clawed:0};
+  const player=document.querySelector("#player"),clawHead=document.querySelector(".claw-head"),exitDoor=document.querySelector(".exit"),message=document.querySelector("#message"),won=document.querySelector("#won"),timer=document.querySelector("#timer"),best=document.querySelector("#best"),deaths=document.querySelector("#deaths"),resultStats=document.querySelector("#resultStats"),restart=document.querySelector("#restart"),again=document.querySelector("#again");
+  const bestKey="nestEscapeClawChaosBest";
+  const state={x:7,y:0,vx:0,vy:0,grounded:true,active:true,keys:new Set(),last:0,elapsed:0,clawed:0,best:readBest(),hiddenAt:0};
   const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+  function readBest(){try{const value=Number(localStorage.getItem(bestKey));return Number.isFinite(value)&&value>0?value:null;}catch{return null;}}
+  function saveBest(value){try{localStorage.setItem(bestKey,String(value));}catch{}}
   function setMessage(text,type=""){message.textContent=text;message.className="message "+type;}
-  function updateStats(){timer.textContent=state.elapsed.toFixed(1);deaths.textContent=state.clawed;resultStats.textContent="Time: "+state.elapsed.toFixed(1)+"s · Clawed: "+state.clawed;}
+  function updateStats(){const time=state.elapsed.toFixed(1),record=state.best?state.best.toFixed(1)+"s":"--";if(timer.textContent!==time)timer.textContent=time;if(best.textContent!==record)best.textContent=record;if(deaths.textContent!==String(state.clawed))deaths.textContent=state.clawed;resultStats.textContent="Time: "+time+"s · Clawed: "+state.clawed+(state.best===state.elapsed?" · New best!":"");}
   function render(){player.style.left=state.x+"%";player.style.bottom=(21+state.y)+"%";player.style.transform="scaleY("+(state.grounded?1:1.08)+")";updateStats();}
   function box(el){return el.getBoundingClientRect();}
   function hits(a,b,pad=8){const A=box(a),B=box(b);return A.left<B.right-pad&&A.right>B.left+pad&&A.top<B.bottom-pad&&A.bottom>B.top+pad;}
-  function reset(text="Fresh attempt. Reach EXIT and avoid the swinging claw."){Object.assign(state,{x:7,y:0,vx:0,vy:0,grounded:true,active:true,runStart:performance.now(),elapsed:0});won.classList.remove("show");setMessage(text);render();}
-  function lose(){if(!state.active)return;state.active=false;state.clawed++;render();setMessage("CLAWED. Press R or Restart. It was definitely personal.","danger");player.animate([{filter:"brightness(1)"},{filter:"brightness(2.2) saturate(.15)"},{filter:"brightness(1)"}],{duration:280});}
+  function clearInput(){state.keys.clear();state.vx=0;}
+  function reset(text="Fresh attempt. Reach EXIT and avoid the swinging claw."){Object.assign(state,{x:7,y:0,vx:0,vy:0,grounded:true,active:true,elapsed:0,last:performance.now()});clearInput();won.classList.remove("show");setMessage(text);render();restart.focus({preventScroll:true});}
+  function lose(){if(!state.active)return;state.active=false;state.clawed++;clearInput();render();setMessage("CLAWED. Press R or Restart. It was definitely personal.","danger");player.animate([{filter:"brightness(1)"},{filter:"brightness(2.2) saturate(.15)"},{filter:"brightness(1)"}],{duration:280});}
   function jump(){if(state.active&&state.grounded){state.vy=45;state.grounded=false;setMessage("Nice jump. Keep moving toward EXIT.");}}
-  function win(){if(!state.active)return;state.active=false;render();setMessage("Exit found!","success");won.classList.add("show");}
-  function update(time){const dt=Math.min((time-state.last)/1000,.035)||0;state.last=time;if(state.active){state.elapsed=(time-state.runStart)/1000;let dir=(state.keys.has("left")?-1:0)+(state.keys.has("right")?1:0);state.vx+=dir*78*dt;state.vx*=Math.pow(.00008,dt);state.x=clamp(state.x+state.vx*dt,2,92);if(!state.grounded){state.vy-=110*dt;state.y+=state.vy*dt;if(state.y<=0){state.y=0;state.vy=0;state.grounded=true;}}render();if(hits(player,claw,9))lose();else if(hits(player,exitDoor,14))win();}requestAnimationFrame(update);}
-  function keyName(key){return key==="ArrowLeft"||key==="a"?"left":key==="ArrowRight"||key==="d"?"right":null;}
-  addEventListener("keydown",e=>{const move=keyName(e.key);if(move){e.preventDefault();state.keys.add(move);}if(["ArrowUp","w"," "].includes(e.key)){e.preventDefault();jump();}if(e.key==="r")reset();});
+  function win(){if(!state.active)return;state.active=false;clearInput();const newBest=!state.best||state.elapsed<state.best;if(newBest){state.best=state.elapsed;saveBest(state.best);}render();setMessage(newBest?"Exit found! New best time.":"Exit found!","success");won.classList.add("show");again.focus({preventScroll:true});}
+  function update(time){const dt=Math.min((time-state.last)/1000,.035)||0;state.last=time;if(state.active&&!document.hidden){state.elapsed+=dt;const dir=(state.keys.has("left")?-1:0)+(state.keys.has("right")?1:0);state.vx+=dir*78*dt;state.vx*=Math.pow(.00008,dt);state.x=clamp(state.x+state.vx*dt,2,92);if(!state.grounded){state.vy-=110*dt;state.y+=state.vy*dt;if(state.y<=0){state.y=0;state.vy=0;state.grounded=true;}}render();if(hits(player,clawHead,5))lose();else if(hits(player,exitDoor,14))win();}requestAnimationFrame(update);}
+  function keyName(key){return key==="ArrowLeft"||key==="a"||key==="A"?"left":key==="ArrowRight"||key==="d"||key==="D"?"right":null;}
+  addEventListener("keydown",e=>{const move=keyName(e.key);if(move){e.preventDefault();state.keys.add(move);}if(["ArrowUp","w","W"," "].includes(e.key)){e.preventDefault();jump();}if(e.key==="r"||e.key==="R")reset();if(e.key==="Escape"&&won.classList.contains("show"))reset();});
   addEventListener("keyup",e=>{const move=keyName(e.key);if(move)state.keys.delete(move);});
-  document.querySelectorAll("[data-move]").forEach(button=>{const move=Number(button.dataset.move)>0?"right":"left";["pointerdown","pointerenter"].forEach(event=>button.addEventListener(event,e=>{if(event==="pointerenter"&&!e.buttons)return;state.keys.add(move);}));["pointerup","pointercancel","pointerleave"].forEach(event=>button.addEventListener(event,()=>state.keys.delete(move)));});
-  document.querySelector("#jump").addEventListener("pointerdown",jump);document.querySelector("#restart").addEventListener("click",()=>reset());document.querySelector("#again").addEventListener("click",()=>reset());
+  addEventListener("blur",clearInput);document.addEventListener("visibilitychange",()=>{if(document.hidden)clearInput();state.last=performance.now();});
+  document.querySelectorAll("[data-move]").forEach(button=>{const move=Number(button.dataset.move)>0?"right":"left";button.addEventListener("pointerdown",e=>{e.preventDefault();button.setPointerCapture?.(e.pointerId);state.keys.add(move);});["pointerup","pointercancel","lostpointercapture","pointerleave"].forEach(event=>button.addEventListener(event,()=>state.keys.delete(move)));});
+  document.querySelector("#jump").addEventListener("pointerdown",e=>{e.preventDefault();jump();});restart.addEventListener("click",()=>reset());again.addEventListener("click",()=>reset());
   reset("Move right. Jump with W, ↑, or the purple button. Reach the exit.");requestAnimationFrame(update);
 </script>
 </body>
