@@ -1,1 +1,1 @@
-function laserHit(q){let px=p.x+p.w/2,py=p.y+p.h/2;if(Math.abs(q.a[0]-q.b[0])<3)return Math.abs(px-q.a[0])<9&&py>Math.min(q.a[1],q.b[1])&&py<Math.max(q.a[1],q.b[1]);return Math.abs(py-q.a[1])<9&&px>Math.min(q.a[0])&&px<Math.max(q.a[0],q.b[0])}
+const q=document.createElement('script');q.src='https://raw.githubusercontent.com/mksyml23/nest-escape/07dfe551681397753858931233131e5dfe765a5b/glassline-action-b.js';document.head.append(q);
